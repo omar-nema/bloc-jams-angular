@@ -1,15 +1,39 @@
 <section class="album-covers containers container clearfix">
-     <div class="collection-album-container column fourth">
-     <img src="/assets/images/album_covers/01.png"/>
+     <div class="collection-album-container column fourth" ng-repeat="album in collection.albums">
+         
+         
+     <img src="{{album.albumArtUrl}}"/>
+         
      <div class="collection-album-info caption">
          <p>
-             <a class="album-name" ui-sref="album">The Colors</a>
+             <a class="album-name" ui-sref="album">{{album.title}}</a>
              <br/>
-             <a ui-sref="album">Pablo Picasso</a>
+             <a ui-sref="album">{{album.artist}}</a>
              <br/>
-             X songs
+            {{album.songs.length}} songs
              <br/>
          </p>
      </div>
+         
+         
+         
  </div>
 </section>
+
+
+
+<!--
+var albumPicasso = {
+    title: 'The Colors',
+    artist: 'Pablo Picasso',
+    label: 'Cubism',
+    year: '1881',
+    albumArtUrl:  'assets/images/album_covers/01.png',
+    songs: [
+        {title: 'Blue', duration: 161.71, audioUrl: 'assets/music/blue'},
+        {title: 'Green', duration: 103.96, audioUrl: 'assets/music/green' },
+        {title: 'Red', duration: 268.45, audioUrl: 'assets/music/red' },
+        {title: 'Pink', duration: 153.14, audioUrl: 'assets/music/pink' },
+        {title: 'Magenta', duration: 374.22, audioUrl: 'assets/music/magenta' }
+    ]   
+};-->
