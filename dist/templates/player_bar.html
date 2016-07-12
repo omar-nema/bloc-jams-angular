@@ -17,10 +17,13 @@
         <div class="control-group currently-playing">
             <h2 class="song-name">
                 {{playerBar.songPlayer.currentSong.title}}
+<!--                we can access currentSong here but not in seek-bar directive?-->
             </h2>
             <div class="seek-control">
-                    <seek-bar></seek-bar>
-                <div class="current-time"></div>
+                    <seek-bar value="{{playerBar.songPlayer.currentTime}}" max="{{playerBar.songPlayer.currentSong.duration}}" on-change="playerBar.songPlayer.setCurrentTime(value)"></seek-bar>
+                <div class="current-time">
+                    {{playerBar.songPlayer.currentTime}}
+                </div>
                 <div class="total-time">
                 {{playerBar.songPlayer.currentSong.duration}}
                 </div>     
@@ -33,7 +36,7 @@
         </div>
         <div class="control-group volume">
         <span class="ion-volume-high icon"></span>
-            <seek-bar></seek-bar>
+            <seek-bar value="{{playerBar.songPlayer.currentVolume}}" max="100" on-change="playerBar.songPlayer.setCurrentVolume(value)"></seek-bar>
         </div>         
     </div>
 </section>

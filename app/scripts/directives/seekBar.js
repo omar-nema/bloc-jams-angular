@@ -10,17 +10,26 @@
             return offsetXPercent
         };
         
-        
+        //you can access external service's functions but not scope.?
         return {
             templateUrl: '/templates/directives/seek_bar.html',
             replace: true,
             restrict: 'E',
-            scope: {},
+            scope: {
+                onChange: '&'
+            },
             link: function(scope, element, attributes){
                 scope.value = 0;
                 scope.max = 100;
                 
                 var seekBar = $(element);
+                
+                attributes.$observe('value', function(newValue){
+                    scope.value = newValue;
+                });
+                attributes.$observe('max', function(newValue){
+                    scope.max = newValue;
+                });                
                 
                 var percentString = function(){
                     var value = scope.value;
@@ -37,20 +46,18 @@
                 };
                 
                 scope.onClickSeekBar = function(event){
-                  var percent = calculatePercent(seekBar, event);
-                  scope.value = percent * scope.max;
+                    var percent = calculatePercent(seekBar, event);
+                    scope.value = percent * scope.max;
+                    notifyOnChange(scope.value);
                 };
-                //here angular js detects that value was changed
                 
-                //after every js turn bindings are checked !
-                //but turn considered finish before inner method?
-                //can you just watch the value variable?
                 scope.trackThumb = function() {
-                    console.log('tracksuit');
                     $(document).bind('mousemove.thumbname', function(event){
                         var percent = calculatePercent(seekBar, event);
                         scope.$apply(function(){
-                            scope.value = percent * scope.max;                });
+                            scope.value = percent * scope.max; 
+                           notifyOnChange(scope.value);                        
+                        });
                     });
                     $(document).bind('mouseup.thumbname', function(event){
                         $(document).unbind('mousemove.thumbname');
@@ -58,6 +65,14 @@
                     }); 
                     
                     };
+                //why does onChange need to be written as an attribute?
+                //is this what's actually calling onChange?
+                var notifyOnChange = function(newValue){
+                    if (typeof scope.onChange === 'function'){
+                        scope.onChange({value: newValue});
+                    }  
+                };
+                
                 }
             }
         };

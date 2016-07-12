@@ -1,5 +1,5 @@
 (function(){
-    function SongPlayer(Fixtures){
+    function SongPlayer($rootScope, Fixtures){
         var SongPlayer = {};
         var currentBuzzObject = null;
         var currentAlbum = Fixtures.getAlbum();
@@ -19,10 +19,20 @@
                 currentBuzzObject = new buzz.sound(song.audioUrl, {
                     formats: ['mp3'],
                     preload: true
-                });               
+                });   
+                
+                currentBuzzObject.setVolume(SongPlayer.currentVolume);
+                //could we have done a getCurrentTime function instead here?
+                currentBuzzObject.bind('timeupdate', function(){
+                    $rootScope.$apply(function(){
+                        SongPlayer.currentTime = currentBuzzObject.getTime(); 
+                    });               
+                });
+            
                 SongPlayer.currentSong = song;            
         };
         var playSong = function(song){
+//                currentBuzzObject.setCurrentVolume();
                 currentBuzzObject.play();
                 song.playing = true;              
         };
@@ -35,7 +45,11 @@
         var getSongIndex = function(song){
             return currentAlbum.songs.indexOf(song);  
         };            
-        SongPlayer.currentSong = null;    
+        
+        SongPlayer.currentSong = null; 
+        SongPlayer.currentTime = null;     
+        SongPlayer.currentVolume = 70;
+        //why can't we use 'this'
         
         SongPlayer.play = function(song){
             song = song || SongPlayer.currentSong;
@@ -86,8 +100,20 @@
             }
         };
         
-  
-
+        SongPlayer.setCurrentTime = function(time){
+            if (currentBuzzObject){
+                currentBuzzObject.setTime(time);                
+            }
+        };
+        
+        SongPlayer.setCurrentVolume = function(volume){
+            if (currentBuzzObject){
+                SongPlayer.currentVolume = volume; 
+                currentBuzzObject.setVolume(volume);      
+            }
+        };
+        
+        
         return SongPlayer;
     };
     
@@ -95,5 +121,5 @@
     
     angular
         .module('blocJams')
-        .factory('SongPlayer', SongPlayer);
+        .factory('SongPlayer', ['$rootScope', 'Fixtures', SongPlayer]);
 })();
